@@ -1,0 +1,13 @@
+{
+  "name": "pypi-register",
+  "version": "2019.03.20",
+  "description": "register pypi.org project",
+  "keywords": [
+    "pypi"
+  ],
+  "homepage": "https://github.com/looking-for-a-job/pypi-register",
+  "license": "Unlicense",
+  "bin": {
+    "pypi-register": "./scripts/pypi-register"
+  }
+}

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+usage() {
+    echo "usage: $(basename $0) name ..." 1>&2
+    [[ $1 == "-h" ]] || [[ $1 == "--help" ]]; exit
+}
+
+[[ $1 == "-h" ]] || [[ $1 == "--help" ]] && usage "$@"
+
+[[ $# == 0 ]] && usage
+
+# https://test.pypi.org/legacy/
+# https://upload.pypi.org/legacy/
+
+repository="https://upload.pypi.org/legacy/"
+while (($#)); do
+    name="$1"
+    shift
+    url="https://pypi.org/project/$name/"
+    ( set -x; curl -f -I -L -sS -o /dev/null "$url" ) && echo "SKIP: $name EXISTS, $url" && continue
+    path="$(mktemp -d)" || exit
+    # { set -x; cd "$path" || exit; { set +x; } 2>/dev/null; }
+    cd "$path" || exit
+    cat <<EOF > setup.py
+from distutils.core import setup
+
+setup(name="$name", version="0.0.0",classifiers=['Development Status :: 1 - Planning'])
+EOF
+    ( set -x; python "$PWD"/setup.py -q sdist upload -q -r "$repository" ) || exit
+    echo "$url"
+done;:
