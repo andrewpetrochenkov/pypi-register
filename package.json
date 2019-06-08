@@ -1,6 +1,6 @@
 {
   "name": "pypi-register",
-  "version": "2019.3.22",
+  "version": "2019.4.13",
   "description": "register pypi.org project",
   "keywords": [
     "pypi"
