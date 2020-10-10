@@ -10,10 +10,6 @@ usage() {
 
 [[ $# == 0 ]] && usage
 
-# https://test.pypi.org/legacy/
-# https://upload.pypi.org/legacy/
-
-repository="https://upload.pypi.org/legacy/"
 while (($#)); do
     name="$1"
     shift
@@ -27,6 +23,8 @@ from distutils.core import setup
 
 setup(name="$name", version="0.0.0",classifiers=['Development Status :: 1 - Planning'])
 EOF
-    ( set -x; python "$PWD"/setup.py -q sdist upload -q -r "$repository" ) || exit
+    ( set -x;
+      python "$PWD"/setup.py -q sdist &&
+      twine upload dist/* ) || exit
     echo "$url"
 done;:
