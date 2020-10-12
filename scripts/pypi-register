@@ -11,20 +11,17 @@ usage() {
 [[ $# == 0 ]] && usage
 
 while (($#)); do
-    name="$1"
-    shift
-    url="https://pypi.org/project/$name/"
-    ( set -x; curl -f -I -L -sS -o /dev/null "$url" ) && echo "SKIP: $name EXISTS, $url" && continue
-    path="$(mktemp -d)" || exit
-    # { set -x; cd "$path" || exit; { set +x; } 2>/dev/null; }
-    cd "$path" || exit
+    url="https://pypi.org/project/$1/"
+    ( set -x; curl -f -I -L -sS -o /dev/null "$url" 2> /dev/null ) && echo "SKIP: $1 EXISTS, $url" && { shift; continue; }
+    cd "$(mktemp -d)" || exit
     cat <<EOF > setup.py
 from distutils.core import setup
 
-setup(name="$name", version="0.0.0",classifiers=['Development Status :: 1 - Planning'])
+setup(name="$1", version="0.0.0",classifiers=['Development Status :: 1 - Planning'])
 EOF
-    ( set -x;
-      python "$PWD"/setup.py -q sdist &&
-      twine upload dist/* ) || exit
+    ( set -x; python setup.py -q sdist --dist-dir="$PWD" 2> /dev/null ) || exit
+    dist="$(find "$PWD" -type f ! -name "setup.py" ! -name "MANIFEST")" || exit
+    ( set -x; twine upload "$dist" 1> /dev/null ) || exit
     echo "$url"
+    shift
 done;:
