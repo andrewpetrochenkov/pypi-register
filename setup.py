@@ -7,9 +7,12 @@ with open('package.json') as f:
 with open('README.md') as f:
     long_description = f.read()
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setuptools.setup(
     name='pypi-register',
-    install_requires=open('requirements.txt').read().splitlines(),
+    install_requires=requirements,
     scripts=['scripts/pypi-register'],
     version=package_metadata['version'],
     description=package_metadata['description'],
