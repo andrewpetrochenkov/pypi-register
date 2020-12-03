@@ -10,7 +10,6 @@ with open('README.md') as f:
 setuptools.setup(
     name='pypi-register',
     install_requires=open('requirements.txt').read().splitlines(),
-    packages=setuptools.find_packages(),
     scripts=['scripts/pypi-register'],
     version=package_metadata['version'],
     description=package_metadata['description'],
